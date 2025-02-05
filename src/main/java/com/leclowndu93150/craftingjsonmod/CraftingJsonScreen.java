@@ -36,7 +36,7 @@ public class CraftingJsonScreen extends AbstractContainerScreen<CraftingJsonMenu
     protected void init() {
         super.init();
         this.exportButton = Button.builder(Component.literal("Export JSON"), button -> exportRecipe())
-                .pos(this.leftPos + 124, this.topPos + 58)  // Positioned under output slot
+                .pos(this.leftPos + 102, this.topPos + 58)
                 .size(60, 20)
                 .build();
         this.addRenderableWidget(exportButton);
