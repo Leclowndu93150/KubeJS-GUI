@@ -1,7 +1,6 @@
 package com.leclowndu93150.craftingjsonmod;
 
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
