@@ -1,4 +1,4 @@
-package com.leclowndu93150.craftingjsonmod;
+package com.leclowndu93150.craftingrecipeexporter;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.common.MinecraftForge;
@@ -11,7 +11,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(CraftingJsonMod.MODID)
 public class CraftingJsonMod {
-    public static final String MODID = "craftingjson";
+    public static final String MODID = "craftingrecipeexporter";
 
     public CraftingJsonMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

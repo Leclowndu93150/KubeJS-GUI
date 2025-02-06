@@ -1,4 +1,4 @@
-package com.leclowndu93150.craftingjsonmod;
+package com.leclowndu93150.craftingrecipeexporter;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -24,8 +24,9 @@ public class ModCommands {
 
         dispatcher.register(
                 Commands.literal("kubejs")
-                        .then(Commands.literal("gui"))
-                        .executes(ModCommands::openMenu)
+                        .then(Commands.literal("gui")
+                                .executes(ModCommands::openMenu)
+                        )
         );
     }
 

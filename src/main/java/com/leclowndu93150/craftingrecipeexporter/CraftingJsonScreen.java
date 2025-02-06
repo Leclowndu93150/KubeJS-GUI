@@ -1,4 +1,4 @@
-package com.leclowndu93150.craftingjsonmod;
+package com.leclowndu93150.craftingrecipeexporter;
 
 
 import com.google.gson.GsonBuilder;
@@ -188,8 +188,25 @@ public class CraftingJsonScreen extends AbstractContainerScreen<CraftingJsonMenu
         try {
             Path scriptsDir = FMLPaths.GAMEDIR.get().resolve("kubejs/server_scripts");
             Files.createDirectories(scriptsDir);
-            Path recipePath = scriptsDir.resolve("recipe_" + System.currentTimeMillis() + ".js");
-            Files.writeString(recipePath, generateKubeJS());
+            Path recipePath = scriptsDir.resolve("exported_recipes.js");
+
+            String newRecipe = generateKubeJS();
+            String existingContent = "";
+
+            if (Files.exists(recipePath)) {
+                existingContent = Files.readString(recipePath);
+            }
+
+            if (!existingContent.contains("ServerEvents.recipes")) {
+                existingContent = "ServerEvents.recipes(event => {\n\n});\n";
+            }
+
+            // Check if recipe already exists (trim to ignore whitespace differences)
+            if (!existingContent.contains(newRecipe.trim())) {
+                // Insert the new recipe before the closing bracket
+                String updatedContent = existingContent.replace("});", newRecipe + "\n});");
+                Files.writeString(recipePath, updatedContent);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -204,24 +221,36 @@ public class CraftingJsonScreen extends AbstractContainerScreen<CraftingJsonMenu
         }
 
         StringBuilder script = new StringBuilder();
+
+        // Don't include "event." prefix when copying to clipboard
         if (!Screen.hasControlDown()) {
-            script.append("ServerEvents.recipes(event => {\n");
+            script.append("    ");
         }
-        script.append("    event.shaped(\n");
-        script.append("        Item.of('").append(ForgeRegistries.ITEMS.getKey(output.getItem())).append("'");
+
+        script.append("event.shaped(\n");
+        if (!Screen.hasControlDown()) {
+            script.append("        ");
+        }
+        script.append("    Item.of('").append(ForgeRegistries.ITEMS.getKey(output.getItem())).append("'");
         if (output.getCount() > 1) {
             script.append(", ").append(output.getCount());
         }
         script.append("),\n");
 
-        script.append("        [\n");
+        if (!Screen.hasControlDown()) {
+            script.append("        ");
+        }
+        script.append("    [\n");
 
         char currentKey = 'A';
         Map<String, Character> itemToKey = new HashMap<>();
 
         boolean hasItems = false;
         for (int row = 0; row < 3; row++) {
-            script.append("            '");
+            if (!Screen.hasControlDown()) {
+                script.append("            ");
+            }
+            script.append("        '");
             for (int col = 0; col < 3; col++) {
                 ItemStack stack = inputs.get(row * 3 + col);
                 if (!stack.isEmpty()) {
@@ -248,20 +277,33 @@ public class CraftingJsonScreen extends AbstractContainerScreen<CraftingJsonMenu
                 script.append("'\n");
             }
         }
-        script.append("        ],\n");
+        if (!Screen.hasControlDown()) {
+            script.append("        ");
+        }
+        script.append("    ],\n");
 
-        script.append("        {\n");
+        if (!Screen.hasControlDown()) {
+            script.append("        ");
+        }
+        script.append("    {\n");
         boolean first = true;
         for (Map.Entry<String, Character> entry : itemToKey.entrySet()) {
             if (!first) script.append(",\n");
-            script.append("            ").append(entry.getValue()).append(": '").append(entry.getKey()).append("'");
+            if (!Screen.hasControlDown()) {
+                script.append("            ");
+            }
+            script.append("        ").append(entry.getValue()).append(": '").append(entry.getKey()).append("'");
             first = false;
         }
-        script.append("\n        }\n");
-        script.append("    )");
+        script.append("\n");
         if (!Screen.hasControlDown()) {
-            script.append("\n})");
+            script.append("        ");
         }
+        script.append("    }\n");
+        if (!Screen.hasControlDown()) {
+            script.append("    ");
+        }
+        script.append(")");
 
         return script.toString();
     }

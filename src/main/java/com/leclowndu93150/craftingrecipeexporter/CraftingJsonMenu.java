@@ -1,7 +1,5 @@
-package com.leclowndu93150.craftingjsonmod;
+package com.leclowndu93150.craftingrecipeexporter;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
